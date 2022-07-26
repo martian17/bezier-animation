@@ -4,6 +4,7 @@ canvas.height = window.innerHeight+5;
 
 /*
 //black theme
+let BackColor = "#fff";
 let PointColor = "#000";
 let LineColor = "#000";
 let SubdotColor = "#000";
