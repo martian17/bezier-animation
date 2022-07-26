@@ -1,0 +1,125 @@
+body{
+    margin:0px;
+    font-family:Arial;
+    overflow:hidden;
+}
+#controls{
+    position:
+    fixed;
+    bottom:0px;
+    transition: max-height.2s;
+    max-height: 95px;
+}
+
+#controls.collapsed{
+    max-height:5px;
+}
+
+#controls .toggle{
+    width:50px;
+    height:40px;
+    background-color:#222;
+    border-radius:10px;
+    position:absolute;
+    top:-40px;
+    left:5px;
+    transition:background-color.2s;
+}
+
+#controls .toggle:hover{
+    background-color:#444;
+}
+
+#controls .toggle::before,
+#controls .toggle::after{
+    content:"";
+    background-color:#fff;
+    position:absolute;
+    width:15px;
+    height:5px;
+    transition:all.2s;
+}
+
+
+#controls .toggle::before{
+    top:10px;
+    left:12px;
+    transform:rotate(30deg);
+    box-shadow:5.77px 10px #fff;
+}
+#controls .toggle::after{
+    top:10px;
+    right:12px;
+    transform:rotate(-30deg);
+    box-shadow:-5.77px 10px #fff;
+}
+
+
+#controls.collapsed .toggle::before{
+    transform:rotate(-30deg);
+    box-shadow:-5.77px 10px #fff;
+}
+#controls.collapsed .toggle::after{
+    transform:rotate(30deg);
+    box-shadow:5.77px 10px #fff;
+}
+
+
+#controls .wrapper{
+    display:inline-block;
+    background-color:#222;
+    border-radius:10px;
+    padding:10px;
+    margin:5px;
+    color:#fffadf;
+}
+
+#controls p{
+    margin:0px;
+}
+
+#controls .play{
+    display: inline-block;
+    font-size: 1.1em;
+    background-color: #52ffc700;
+    color: #52ffc7;
+    border: solid 2px #52ffc7;
+    padding: 5px;
+    min-width:90px;
+    text-align:center;
+    border-radius: 8px;
+    transition:background-color.2s;
+    user-select:none;
+}
+
+#controls .play:hover{
+    background-color: #52ffc7ff;
+    color:#222;
+}
+
+
+#controls .row{
+    display:flex;
+    margin-bottom:10px;
+}
+#controls .row span{
+    line-height:35px;
+}
+
+
+#controls .play.stop{
+    background-color: #ff525200;
+    color: #ff5252;
+    border: solid 2px #ff5252;
+}
+
+#controls .play.stop:hover{
+    background-color: #ff5252ff;
+    color:#222;
+}
+
+#controls .range{
+    flex-grow:1;
+    margin: 0px 10px 0px 5px;
+}
+
