@@ -57,30 +57,20 @@ class Point {
         let that = this;
         container.disableEvents = true;
         container.ghostPoint.visible = false;
-        let handleMouseMove = (e)=>{
-            let [x, y] = container.evtToCoords(e);
+        let handleMouseMove = (x,y)=>{
             if (!that.moving) return;
             that.x = x;
             that.y = y;
         };
-        let handleTouchMove = (e)=>{
-            let [x, y] = container.touchEvtToCoords(e);
-            if (!that.moving) return;
-            that.x = x;
-            that.y = y;
-        };
+        let evt1,evt2;
         let handleMouseUp = ()=>{
             that.moving = false;
             container.disableEvents = false;
-            container.canvas.removeEventListener("mousemove",handleMouseMove);
-            container.canvas.removeEventListener("mouseup",handleMouseUp);
-            container.canvas.addEventListener("touchmove",handleTouchMove);
-            container.canvas.addEventListener("touchend",handleMouseUp);
+            evt1.cancel();
+            evt2.cancel();
         }
-        container.canvas.addEventListener("mousemove",handleMouseMove);
-        container.canvas.addEventListener("mouseup",handleMouseUp);
-        container.canvas.addEventListener("touchmove",handleTouchMove);
-        container.canvas.addEventListener("touchend",handleMouseUp);
+        evt1 = container.on("mousemove",handleMouseMove);
+        evt2 = container.on("mouseup",handleMouseUp);
     }
     mousemove() {
     }
@@ -201,8 +191,8 @@ class Container {
         this.ctx = canvas.getContext("2d");
         let prevPointed = null;
         let that = this;
-        
-        let handleMouseMove = ([x,y])=>{
+        this.on("mousemove", (x,y) => {
+            if(that.disableEvents)return;
             let pointed = that.getPointed(x, y);
             if (pointed !== prevPointed) {
                 if(prevPointed)prevPointed.mouseleave(x, y);
@@ -210,48 +200,19 @@ class Container {
                 prevPointed = pointed;
             }
             if(pointed)pointed.mousemove(x, y);
-        };
-        let handleMouseDown = ([x,y])=>{
+        });
+        this.on("mousedown", (x,y) => {
+            if(that.disableEvents)return;
             let pointed = that.getPointed(x, y);
             if (!pointed) return;
             pointed.mousedown(x, y);
-        };
-        let handleMouseUp = ([x,y])=>{
+        });
+        this.on("mouseup", (x,y) => {
+            if(that.disableEvents)return;
             let pointed = that.getPointed(x, y);
             if (!pointed) return;
             pointed.mouseup(x, y);
-        };
-        
-        canvas.addEventListener("mousemove", (e) => {
-            if(that.disableEvents)return;
-            handleMouseMove(that.evtToCoords(e));
         });
-        canvas.addEventListener("mousedown", (e) => {
-            if(that.disableEvents)return;
-            handleMouseDown(that.evtToCoords(e));
-        });
-        canvas.addEventListener("mouseup", (e) => {
-            if(that.disableEvents)return;
-            handleMouseUp(that.evtToCoords(e));
-        });
-        
-        canvas.addEventListener("touchstart", (e) => {
-            if(that.disableEvents)return;
-            handleMouseDown(that.touchEvtToCoords(e));
-        });
-        canvas.addEventListener("touchmove", (e) => {
-            if(that.disableEvents)return;
-            handleMouseMove(that.touchEvtToCoords(e));
-        });
-        canvas.addEventListener("touchend", (e) => {
-            if(that.disableEvents)return;
-            handleMouseUp(that.touchEvtToCoords(e));
-        });
-        canvas.addEventListener("touccancel", (e) => {
-            if(that.disableEvents)return;
-            handleMouseUp(that.touchEvtToCoords(e));
-        });
-        
         //responsive code
         window.addEventListener("resize",(e)=>{
             let {width:w0,height:h0} = canvas;
@@ -267,6 +228,28 @@ class Container {
             that.ghostPoint.x *= w1/w0;
             that.ghostPoint.y *= h1/h0;
         });
+    }
+    on(evt,cb){
+        let table = {
+            mousemove:"touchmove",
+            mousedown:"touchstart",
+            mouseup:"touchend"
+        };
+        let that = this;
+        let mouse = (e)=>{
+            cb(...that.evtToCoords(e));
+        };
+        let touch = (e)=>{
+            cb(...that.touchEvtToCoords(e));
+        };
+        this.canvas.addEventListener(evt,mouse);
+        this.canvas.addEventListener(table[evt],touch);
+        return {
+            cancel:()=>{
+            that.canvas.removeEventListener(evt,mouse);
+            that.canvas.removeEventListener(table[evt],touch);
+            }
+        };
     }
     evtToCoords(e) {
         let rect = this.canvas.getBoundingClientRect();
