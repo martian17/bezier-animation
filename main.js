@@ -465,7 +465,7 @@ play.on("click",()=>{
 
 //description
 let p = wrapper.add("p",{},"Drag the points to move them around, and click on the lines to add new points<br>");
-p.innerHTML += 'Original: <a href="https://codepen.io/tholman/details/kKKVxB" style="color:#8ff">tholman/Bezier_Sim</a><br>';
-p.innerHTML += 'Github: <a href="https://martian17.github.io/bezier-animation/" style="color:#8ff">martian17/bezier-animation</a> ';
-p.innerHTML += 'Codepen: <a href="https://codepen.io/MartianLord/pen/qBoXQEq" style="color:#8ff">MartianLord/bezier-animation</a>';
+p.innerHTML += 'Original: <a href="https://codepen.io/tholman/details/kKKVxB" target="_blank" style="color:#8ff">tholman/Bezier_Sim</a><br>';
+p.innerHTML += 'Github: <a href="https://github.com/martian17/bezier-animation" target="_blank" style="color:#8ff">martian17/bezier-animation</a> ';
+p.innerHTML += 'Codepen: <a href="https://codepen.io/MartianLord/pen/qBoXQEq" target="_blank" style="color:#8ff">MartianLord/bezier-animation</a>';
 
