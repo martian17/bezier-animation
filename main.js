@@ -5,7 +5,7 @@ canvas.height = window.innerHeight+5;
 /*
 //black theme
 let BackColor = "#fff";
-let PointColor = "#000";
+let PointColor = "#000000";
 let LineColor = "#000";
 let SubdotColor = "#000";
 let SublineColor = "#0008";
@@ -449,5 +449,6 @@ play.on("click",()=>{
 });
 
 //description
-let p = wrapper.add("p",{},"Drag points to move them around, and click on lines to add new points");
+let p = wrapper.add("p",{},"Drag the points to move them around, and click on the lines to add new points<br>");
+p.innerHTML += 'Original: <a href="https://codepen.io/tholman/details/kKKVxB" style="color:#8ff">tholman</a>';
 
