@@ -329,6 +329,7 @@ class Container {
                     ctx.moveTo(p1[0],p1[1]);
                     ctx.lineTo(p2[0],p2[1]);
                     ctx.strokeStyle = SublineColor;
+                    ctx.lineWidth = 1;
                     ctx.stroke();
                     //draw point
                     ctx.beginPath();
