@@ -63,14 +63,24 @@ class Point {
             that.x = x;
             that.y = y;
         };
+        let handleTouchMove = (e)=>{
+            let [x, y] = container.touchEvtToCoords(e);
+            if (!that.moving) return;
+            that.x = x;
+            that.y = y;
+        };
         let handleMouseUp = ()=>{
             that.moving = false;
             container.disableEvents = false;
             container.canvas.removeEventListener("mousemove",handleMouseMove);
             container.canvas.removeEventListener("mouseup",handleMouseUp);
+            container.canvas.addEventListener("touchmove",handleTouchMove);
+            container.canvas.addEventListener("touchend",handleMouseUp);
         }
         container.canvas.addEventListener("mousemove",handleMouseMove);
         container.canvas.addEventListener("mouseup",handleMouseUp);
+        container.canvas.addEventListener("touchmove",handleTouchMove);
+        container.canvas.addEventListener("touchend",handleMouseUp);
     }
     mousemove() {
     }
@@ -191,9 +201,8 @@ class Container {
         this.ctx = canvas.getContext("2d");
         let prevPointed = null;
         let that = this;
-        canvas.addEventListener("mousemove", (e) => {
-            if(that.disableEvents)return;
-            let [x, y] = that.evtToCoords(e);
+        
+        let handleMouseMove = ([x,y])=>{
             let pointed = that.getPointed(x, y);
             if (pointed !== prevPointed) {
                 if(prevPointed)prevPointed.mouseleave(x, y);
@@ -201,21 +210,48 @@ class Container {
                 prevPointed = pointed;
             }
             if(pointed)pointed.mousemove(x, y);
-        });
-        canvas.addEventListener("mousedown", (e) => {
-            if(that.disableEvents)return;
-            let [x, y] = that.evtToCoords(e);
+        };
+        let handleMouseDown = ([x,y])=>{
             let pointed = that.getPointed(x, y);
             if (!pointed) return;
             pointed.mousedown(x, y);
-        });
-        canvas.addEventListener("mouseup", (e) => {
-            if(that.disableEvents)return;
-            let [x, y] = that.evtToCoords(e);
+        };
+        let handleMouseUp = ([x,y])=>{
             let pointed = that.getPointed(x, y);
             if (!pointed) return;
             pointed.mouseup(x, y);
+        };
+        
+        canvas.addEventListener("mousemove", (e) => {
+            if(that.disableEvents)return;
+            handleMouseMove(that.evtToCoords(e));
         });
+        canvas.addEventListener("mousedown", (e) => {
+            if(that.disableEvents)return;
+            handleMouseDown(that.evtToCoords(e));
+        });
+        canvas.addEventListener("mouseup", (e) => {
+            if(that.disableEvents)return;
+            handleMouseUp(that.evtToCoords(e));
+        });
+        
+        canvas.addEventListener("touchstart", (e) => {
+            if(that.disableEvents)return;
+            handleMouseDown(that.touchEvtToCoords(e));
+        });
+        canvas.addEventListener("touchmove", (e) => {
+            if(that.disableEvents)return;
+            handleMouseMove(that.touchEvtToCoords(e));
+        });
+        canvas.addEventListener("touchend", (e) => {
+            if(that.disableEvents)return;
+            handleMouseUp(that.touchEvtToCoords(e));
+        });
+        canvas.addEventListener("touccancel", (e) => {
+            if(that.disableEvents)return;
+            handleMouseUp(that.touchEvtToCoords(e));
+        });
+        
         //responsive code
         window.addEventListener("resize",(e)=>{
             let {width:w0,height:h0} = canvas;
@@ -237,6 +273,19 @@ class Container {
         let x = e.pageX - window.scrollX - rect.left; //x position within the element.
         let y = e.pageY - window.scrollY - rect.top; //y position within the element.
         return [x, y];
+    }
+    txy=[0,0];
+    touchEvtToCoords(e) {
+        let rect = this.canvas.getBoundingClientRect();
+        let x,y;
+        if(e.touches[0]){
+            x = e.touches[0].pageX - window.scrollX - rect.left; //x position within the element.
+            y = e.touches[0].pageY - window.scrollY - rect.top; //y position within the element.
+        }else{
+            [x,y] = this.txy;
+        }
+        this.txy = [x,y];
+        return [x,y];
     }
     appendPoint(x, y) {
         let p = new Point(this, x, y);
