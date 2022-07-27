@@ -216,6 +216,21 @@ class Container {
             if (!pointed) return;
             pointed.mouseup(x, y);
         });
+        //responsive code
+        window.addEventListener("resize",(e)=>{
+            let {width:w0,height:h0} = canvas;
+            canvas.width = window.innerWidth+5;
+            canvas.height = window.innerHeight+5;
+            let {width:w1,height:h1} = canvas;
+            //scale the coordinates
+            that.points.forEach((_,p)=>{
+                console.log(p);
+                p.x *= w1/w0;
+                p.y *= h1/h0;
+            });
+            that.ghostPoint.x *= w1/w0;
+            that.ghostPoint.y *= h1/h0;
+        });
     }
     evtToCoords(e) {
         let rect = this.canvas.getBoundingClientRect();
