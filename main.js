@@ -26,7 +26,7 @@ let BigdotColor = "#ff52c9";
 class Point {
     next = null;
     prev = null;
-    r = 8;
+    r = 20;
     dor_r = 3.3;
     constructor(container, x, y) {
         this.x = x;
